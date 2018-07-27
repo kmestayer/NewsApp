@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Helper methods related to requesting and receiving earthquake data from USGS.
+ * Helper methods related to requesting and receiving news story data from The Guardian.
  */
 public final class QueryUtils {
 
@@ -36,7 +36,7 @@ public final class QueryUtils {
     }
 
     /**
-     * Query the USGS dataset and return a list of {@link News} objects.
+     * Query the Guardian dataset and return a list of {@link News} objects.
      */
     public static List<News> fetchNewsData(String requestUrl) {
         // Create URL object
@@ -50,10 +50,10 @@ public final class QueryUtils {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
 
-        // Extract relevant fields from the JSON response and create a list of {@link Earthquake}s
+        // Extract relevant fields from the JSON response and create a list of {@link News}s
         List<News> news = extractResultsFromJson(jsonResponse);
 
-        // Return the list of {@link Earthquake}s
+        // Return the list of {@link News)
         return news;
     }
 
@@ -157,15 +157,15 @@ public final class QueryUtils {
             // which represents a list of results (or news stories).
             JSONArray newsArray = baseJsonResponse.getJSONArray("response");
 
-            // For each earthquake in the earthquakeArray, create an {@link Earthquake} object
+            // For each news story in the newsArray, create an {@link News} object
             for (int i = 0; i < newsArray.length(); i++) {
 
-                // Get a single earthquake at position i within the list of earthquakes
+                // Get a single news story at position i within the list of news stories
                 JSONObject currentNews = newsArray.getJSONObject(i);
 
-                // For a given earthquake, extract the JSONObject associated with the
-                // key called "properties", which represents a list of all properties
-                // for that earthquake.
+                // For a given news story, extract the JSONObject associated with the
+                // key called "results", which represents a list of all properties
+                // for that news story.
                 JSONObject results = currentNews.getJSONObject("results");
 
 
@@ -178,11 +178,11 @@ public final class QueryUtils {
                 // Extract the value for the key called "webUrl"
                 String url = results.getString("webUrl");
 
-                // Create a new {@link Earthquake} object with the magnitude, location, time,
+                // Create a new {@link News} object with the headline, time and url
                 // and url from the JSON response.
                 News newsstory = new News(headline, time, url);
 
-                // Add the new {@link Earthquake} to the list of earthquakes.
+                // Add the new {@link News} to the list of news stories.
                 news.add(newsstory);
             }
 
@@ -193,7 +193,7 @@ public final class QueryUtils {
             Log.e("QueryUtils", "Problem parsing the news JSON results", e);
         }
 
-        // Return the list of earthquakes
+        // Return the list of news stories
         return news;
     }
 

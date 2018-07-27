@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * An {@link NewsAdapter} knows how to create a list item layout for each earthquake
+ * An {@link NewsAdapter} knows how to create a list item layout for each news story
  * in the data source (a list of {@link News} objects).
  *
  * These list item layouts will be provided to an adapter view like ListView
@@ -24,17 +24,12 @@ import java.util.List;
  */
 public class NewsAdapter extends ArrayAdapter<News> {
 
-    /**
-     * The part of the location string from the USGS service that we use to determine
-     * whether or not there is a location offset present ("5km N of Cairo, Egypt").
-     */
-    private static final String LOCATION_SEPARATOR = " of ";
 
     /**
      * Constructs a new {@link NewsAdapter}.
      *
      * @param context of the app
-     * @param news is the list of earthquakes, which is the data source of the adapter
+     * @param news is the list of news stories, which is the data source of the adapter
      */
     public NewsAdapter(Context context, List<News> news) {
         super(context, 0, news);
@@ -54,31 +49,28 @@ public class NewsAdapter extends ArrayAdapter<News> {
                     R.layout.news_list_item, parent, false);
         }
 
-        // Find the earthquake at the given position in the list of earthquakes
+        // Find the news story at the given position in the list of news stories
         News currentNews = getItem(position);
 
 
-
-
-        // Get the original location string from the Earthquake object,
-        // which can be in the format of "5km N of Cairo, Egypt" or "Pacific-Antarctic Ridge".
+        // Get the original location string from the News object
         String originalHeadline = currentNews.getHeadline();
 
 
         // Find the TextView with view ID location
         TextView originalHeadlineView = (TextView) listItemView.findViewById(R.id.primary_location);
-        // Display the location of the current earthquake in that TextView
+        // Display the headline of the current news story in that TextView
         originalHeadlineView.setText(originalHeadline);
 
 
-        // Create a new Date object from the time in milliseconds of the earthquake
+        // Create a new Date object from the time the news story was posted
         Date dateObject = new Date(currentNews.getTimeInMilliseconds());
 
         // Find the TextView with view ID date
         TextView dateView = (TextView) listItemView.findViewById(R.id.date);
         // Format the date string (i.e. "Mar 3, 1984")
         String formattedDate = formatDate(dateObject);
-        // Display the date of the current earthquake in that TextView
+        // Display the date of the current news story in that TextView
         dateView.setText(formattedDate);
 
         // Find the TextView with view ID time
@@ -92,15 +84,6 @@ public class NewsAdapter extends ArrayAdapter<News> {
         return listItemView;
     }
 
-
-    /**
-     * Return the formatted magnitude string showing 1 decimal place (i.e. "3.2")
-     * from a decimal magnitude value.
-     */
-    private String formatMagnitude(double magnitude) {
-        DecimalFormat magnitudeFormat = new DecimalFormat("0.0");
-        return magnitudeFormat.format(magnitude);
-    }
 
     /**
      * Return the formatted date string (i.e. "Mar 3, 1984") from a Date object.
