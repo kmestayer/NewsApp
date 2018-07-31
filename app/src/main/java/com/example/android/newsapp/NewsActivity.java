@@ -26,7 +26,7 @@ public class NewsActivity extends AppCompatActivity
 
     /** URL for the news story from the Guardian dataset */
     private static final String NEWS_REQUEST_URL =
-            "https://content.guardianapis.com/search?q=%22dallas%20cowboys%22&from-date=2018-01-01&api-key=96e16a60-42d6-417b-9020-3a71c1218d0e";
+            "https://content.guardianapis.com/search?q=%20nfl%20football&from-date=2018-01-01&show-tags=contributor&api-key=96e16a60-42d6-417b-9020-3a71c1218d0e";
 
     /**
      * Constant value for the news loader ID. We can choose any integer.

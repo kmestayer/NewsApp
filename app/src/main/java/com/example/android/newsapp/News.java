@@ -11,24 +11,29 @@ public class News {
     private String mHeadline;
 
     /** Time of the earthquake */
-    private String mTimeInMilliseconds;
+    private String mDate;
 
     /** Website URL of the news story */
     private String mUrl;
+
+    /**Contributor of article*/
+    private String mContributor;
 
     /**
      * Constructs a new {@link News} object.
      *
      *
      * @param headline is the headline of the story
-     * @param timeInMilliseconds is the time when the story was posted
+     * @param date is the time when the story was posted
      * @param url is the website URL to find more details about the news story
+     * @param contributor is contributor of the article
      */
-    public News(String headline, String timeInMilliseconds, String url) {
+    public News(String headline, String date, String url, String contributor) {
 
         mHeadline = headline;
-        mTimeInMilliseconds = timeInMilliseconds;
+        mDate = date;
         mUrl = url;
+        mContributor = contributor;
     }
 
 
@@ -42,8 +47,8 @@ public class News {
     /**
      * Returns the time of the story.
      */
-    public String getTimeInMilliseconds() {
-        return mTimeInMilliseconds;
+    public String getDate() {
+        return mDate;
     }
 
     /**
@@ -51,5 +56,12 @@ public class News {
      */
     public String getUrl() {
         return mUrl;
+    }
+
+    /**
+     * Returns the contributor of the story.
+     */
+    public String getContributor() {
+        return mContributor;
     }
 }

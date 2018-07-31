@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">News App</string>
+    <string name="app_name">Football News App</string>
 
     <!-- Text to display in the list when there are no news stories [CHAR LIMIT=NONE] -->
     <string name="no_news">No news stories found.</string>
 
     <string name="no_internet_connection">No Internet connection.</string>
-
-
 
 </resources>

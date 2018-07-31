@@ -99,7 +99,7 @@ public final class QueryUtils {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -153,34 +153,50 @@ public final class QueryUtils {
             // Create a JSONObject from the JSON response string
             JSONObject baseJsonResponse = new JSONObject(newsJSON);
 
-            // Extract the JSONArray associated with the key called "results",
+            // Extract the JSONArray associated with the key called "response",
             // which represents a list of results (or news stories).
-            JSONArray newsArray = baseJsonResponse.getJSONArray("response");
+            JSONObject newsObject = baseJsonResponse.getJSONObject("response");
 
-            // For each news story in the newsArray, create an {@link News} object
-            for (int i = 0; i < newsArray.length(); i++) {
+            // Extract the JSONArray associated with key "results", which represents
+            // a list of information about articles.
+            JSONArray results = newsObject.getJSONArray("results");
+
+
+            // For each news story in the JSONArray, create an {@link News} object
+            for (int i = 0; i < results.length(); i++) {
 
                 // Get a single news story at position i within the list of news stories
-                JSONObject currentNews = newsArray.getJSONObject(i);
-
-                // For a given news story, extract the JSONObject associated with the
-                // key called "results", which represents a list of all properties
-                // for that news story.
-                JSONObject results = currentNews.getJSONObject("results");
+                JSONObject currentNews = results.getJSONObject(i);
 
 
                 // Extract the value for the key called "webTitle"
-                String headline = results.getString("webTitle");
-
+                String headline = currentNews.getString("webTitle");
                 // Extract the value for the key called "webPublicationDate"
-                String time = results.getString("webPublicationDate");
-
+                String date = currentNews.getString("webPublicationDate");
                 // Extract the value for the key called "webUrl"
-                String url = results.getString("webUrl");
+                String url = currentNews.getString("webUrl");
+
+                // Extract the JSONArray associated with key "tags", which represents
+                // information about the contributor of the article.
+                JSONArray tags = currentNews.getJSONArray("tags");
+                String contributor = "";
+
+                if(tags.length() == 0) {
+                    contributor = null;
+                } else {
+                    for (int x = 0; x < tags.length(); x++) {
+                        // Get a contributor at position x from the list of tags.
+                        JSONObject currentContributor = tags.getJSONObject(x);
+
+                        // Extract the value for the key "webTitle", which represents
+                        // the first and last name of the contributor.
+                        contributor = currentContributor.getString("webTitle");
+                    }
+                }
 
                 // Create a new {@link News} object with the headline, time and url
                 // and url from the JSON response.
-                News newsstory = new News(headline, time, url);
+                News newsstory = new News(headline, date, url, contributor);
 
                 // Add the new {@link News} to the list of news stories.
                 news.add(newsstory);

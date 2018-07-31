@@ -14,6 +14,9 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  * An {@link NewsAdapter} knows how to create a list item layout for each news story
@@ -24,7 +27,8 @@ import java.util.List;
  */
 public class NewsAdapter extends ArrayAdapter<News> {
 
-
+    /** String containing the split position of Date **/
+    private static final String DATE_SEPARATOR = "T";
     /**
      * Constructs a new {@link NewsAdapter}.
      *
@@ -56,48 +60,50 @@ public class NewsAdapter extends ArrayAdapter<News> {
         // Get the original location string from the News object
         String originalHeadline = currentNews.getHeadline();
 
-
         // Find the TextView with view ID location
-        TextView originalHeadlineView = (TextView) listItemView.findViewById(R.id.primary_location);
+        TextView originalHeadlineView = listItemView.findViewById(R.id.headline);
         // Display the headline of the current news story in that TextView
         originalHeadlineView.setText(originalHeadline);
 
+        // Get the contributer name
+        String contributor = currentNews.getContributor();
+        // Find the TextView with contributor location
+        TextView contributorView = listItemView.findViewById(R.id.contributor);
+        // Display the headline of the current news story in that TextView
+        contributorView.setText(contributor);
 
-        // Create a new Date object from the time the news story was posted
-        Date dateObject = new Date(currentNews.getTimeInMilliseconds());
 
+        //Get date
+        String originalDate = currentNews.getDate();
+        String date =null;
+
+        // If date contains a "T", split String here and assign first part to date.
+        if(originalDate.contains(DATE_SEPARATOR)) {
+            String[] parts = originalDate.split(DATE_SEPARATOR);
+            date = parts[0];
+        }
+
+        // Converts the date to format of "MM-dd-yyyy".
+        // Reference: https://stackoverflow.com/questions/35939337/how-to-convert-date-to-a-particular-format-in-android/35939543#35939543
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        Date newDate = null;
+        try {
+            newDate = spf.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        spf = new SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH);
+        date = spf.format(newDate);
+
+        // Sets text of the date TextView.
         // Find the TextView with view ID date
-        TextView dateView = (TextView) listItemView.findViewById(R.id.date);
+        TextView dateView = listItemView.findViewById(R.id.date);
         // Format the date string (i.e. "Mar 3, 1984")
-        String formattedDate = formatDate(dateObject);
-        // Display the date of the current news story in that TextView
-        dateView.setText(formattedDate);
+        dateView.setText(date);
 
-        // Find the TextView with view ID time
-        TextView timeView = (TextView) listItemView.findViewById(R.id.time);
-        // Format the time string (i.e. "4:30PM")
-        String formattedTime = formatTime(dateObject);
-        // Display the time of the current earthquake in that TextView
-        timeView.setText(formattedTime);
 
         // Return the list item view that is now showing the appropriate data
         return listItemView;
     }
 
-
-    /**
-     * Return the formatted date string (i.e. "Mar 3, 1984") from a Date object.
-     */
-    private String formatDate(Date dateObject) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
-        return dateFormat.format(dateObject);
-    }
-
-    /**
-     * Return the formatted date string (i.e. "4:30 PM") from a Date object.
-     */
-    private String formatTime(Date dateObject) {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
-        return timeFormat.format(dateObject);
-    }
 }
