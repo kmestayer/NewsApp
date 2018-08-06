@@ -6,11 +6,15 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -26,7 +30,7 @@ public class NewsActivity extends AppCompatActivity
 
     /** URL for the news story from the Guardian dataset */
     private static final String NEWS_REQUEST_URL =
-            "https://content.guardianapis.com/search?q=%20nfl%20football&from-date=2018-01-01&show-tags=contributor&api-key=96e16a60-42d6-417b-9020-3a71c1218d0e";
+            "https://content.guardianapis.com/search?q=sports";
 
     /**
      * Constant value for the news loader ID. We can choose any integer.
@@ -108,9 +112,35 @@ public class NewsActivity extends AppCompatActivity
 
     @Override
     public Loader<List<News>> onCreateLoader(int i, Bundle bundle) {
-        // Create a new loader for the given URL
-        return new NewsLoader(this, NEWS_REQUEST_URL);
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // getString retrieves a String value from the preferences. The second parameter is the default value for this preference.
+        String whichSport = sharedPrefs.getString(
+                getString(R.string.settings_which_sport_key),
+                getString(R.string.settings_which_sport_default));
+
+        // parse breaks apart the URI string that's passed into its parameter
+        Uri baseUri = Uri.parse(NEWS_REQUEST_URL);
+
+        // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        // Append query parameter and its value. For example, the `format=geojson`
+        
+        //uriBuilder.appendQueryParameter("q", whichSport);
+        uriBuilder.appendQueryParameter("from-date", "2018-01-01");
+        //uriBuilder.appendQueryParameter("limit", "10");
+        //uriBuilder.appendQueryParameter("q", whichSport);
+        uriBuilder.appendQueryParameter("show-tag", "contributor");
+        uriBuilder.appendQueryParameter("api-key", "96e16a60-42d6-417b-9020-3a71c1218d0e");
+        //uriBuilder.appendQueryParameter("orderby", "time");
+
+        // Return the completed uri `http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=10&minmag=minMagnitude&orderby=time
+        return new NewsLoader(this, uriBuilder.toString());
+
     }
+
 
     @Override
     public void onLoadFinished(Loader<List<News>> loader, List<News> news) {
@@ -136,4 +166,24 @@ public class NewsActivity extends AppCompatActivity
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }
+
+    @Override
+    // This method initialize the contents of the Activity's options menu.
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the Options Menu we specified in XML
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
