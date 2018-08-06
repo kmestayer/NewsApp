@@ -9,10 +9,12 @@
     <string name="settings_menu_item">Settings</string>
     <string name="settings_title">News Settings</string>
 
-    <string name="settings_which_sport_label">Which Sport?</string>
+    <string name="settings_which_sport_label">Filter by Sport?</string>
     <string name="settings_which_sport_key" translatable="false">which_sport</string>
     <string name="settings_which_sport_default" translatable="false">sports</string>
 
-
+    <string name="settings_preference2key">settings_preference1</string>
+    <string name="settings_preference2title">Order By</string>
+    <string name="settings_preference2dafaultvalue">newest</string>
 
 </resources>

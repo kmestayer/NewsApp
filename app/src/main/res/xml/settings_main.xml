@@ -15,4 +15,11 @@
         android:selectAllOnFocus="true"
         android:title="@string/settings_which_sport_label" />
 
+    <ListPreference
+        android:defaultValue="@string/settings_preference2dafaultvalue"
+        android:entries="@array/settings_preference2entries"
+        android:entryValues="@array/settings_preference2entryvalues"
+        android:key="@string/settings_preference2key"
+        android:title="@string/settings_preference2title" />
+
 </PreferenceScreen>

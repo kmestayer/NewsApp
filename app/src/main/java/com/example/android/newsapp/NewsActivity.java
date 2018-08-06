@@ -30,7 +30,7 @@ public class NewsActivity extends AppCompatActivity
 
     /** URL for the news story from the Guardian dataset */
     private static final String NEWS_REQUEST_URL =
-            "https://content.guardianapis.com/search?q=sports";
+            "https://content.guardianapis.com/search";
 
     /**
      * Constant value for the news loader ID. We can choose any integer.
@@ -120,21 +120,24 @@ public class NewsActivity extends AppCompatActivity
                 getString(R.string.settings_which_sport_key),
                 getString(R.string.settings_which_sport_default));
 
+        String orderBy = sharedPrefs.getString(
+                getString(R.string.settings_preference2key),
+                getString(R.string.settings_preference2dafaultvalue));
+
         // parse breaks apart the URI string that's passed into its parameter
         Uri baseUri = Uri.parse(NEWS_REQUEST_URL);
 
         // buildUpon prepares the baseUri that we just parsed so we can add query parameters to it
         Uri.Builder uriBuilder = baseUri.buildUpon();
 
-        // Append query parameter and its value. For example, the `format=geojson`
-        
-        //uriBuilder.appendQueryParameter("q", whichSport);
+        // Append query parameter and its value. For example, the `q=football`
+        uriBuilder.appendQueryParameter("q", "\"" + whichSport + "\"");
+        uriBuilder.appendQueryParameter("orderby", orderBy);
         uriBuilder.appendQueryParameter("from-date", "2018-01-01");
-        //uriBuilder.appendQueryParameter("limit", "10");
-        //uriBuilder.appendQueryParameter("q", whichSport);
-        uriBuilder.appendQueryParameter("show-tag", "contributor");
+        uriBuilder.appendQueryParameter("limit", "10");
+        uriBuilder.appendQueryParameter("show-tags", "contributor");
         uriBuilder.appendQueryParameter("api-key", "96e16a60-42d6-417b-9020-3a71c1218d0e");
-        //uriBuilder.appendQueryParameter("orderby", "time");
+
 
         // Return the completed uri `http://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&limit=10&minmag=minMagnitude&orderby=time
         return new NewsLoader(this, uriBuilder.toString());
